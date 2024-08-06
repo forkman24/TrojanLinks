@@ -1,0 +1,25 @@
+name: Sync Fork
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # 每半小时运行一次
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Fork Repository
+      uses: actions/checkout@v2
+      with:
+        path: fork
+
+    - name: Add Upstream Repository
+      run: |
+        git remote add upstream https://github.com/Huibq/TrojanLinks.git
+        git fetch upstream
+        git checkout master
+        git merge upstream/master --allow-unrelated-histories
+        git push origin master
+      working-directory: fork
